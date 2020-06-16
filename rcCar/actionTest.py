@@ -64,7 +64,10 @@ class pollingThread(QThread):
                 if cmdType == "right":
                     input_angle = self.getAngle(cmdArg)
                     self.car.steer_right(input_angle)
-                
+
+                if cmdType == "mid":
+                    self.car.steer_center()
+
                 if cmdType == "speedUp":
                     self.car.speedUp()
 

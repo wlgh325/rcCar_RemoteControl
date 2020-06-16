@@ -9,7 +9,13 @@ class Car():
         self.dcMotor.setSpeed(self.speed)
         # 서보 설정
         self.servo = self.mh._pwm
-        self.servo.setPWMFreq(60)
+        self.servo.setPWMFreq(50)
+
+        # init constant
+        self.MIDPWM = 375
+        self.MINPWM = 140
+        self.MAXPWM = 450
+        self.MAXANGLE = 60
         print("car init")
 
     # 앞으로
@@ -39,29 +45,25 @@ class Car():
         self.dcMotor.setSpeed(speed)
         print("speedDown")
 
-    # 각도만큼 핸들 틀기
-    def steer(self, angle=0): # 각도 -90˚~ +90˚
-        if angle <= -60: # 서보의 작동범위는 좌우 양 극단의 30˚까지는 가지 않는다.
-            angle = -60 
-        if angle >= 60:
-            angle = 60 
-        pulse_time = 200+(614-200)//180*(angle+90)  # 200:-90˚ ~ 614:+90˚ 비율에 따라 맵핑
-    
-        self.servo.setPWM(0,0,pulse_time)
+    # 좌회전
+    def steer_left(self, angle):
+        if angle > self.MAXANGLE:
+            angle = self.MAXANGLE
+        pulse_time = self.MIDPWM - (self.MIDPWM-self.MINPWM)/self.MAXANGLE*angle
+        self.servo.setPWM(0,0,int(pulse_time))
+        print("steer_left")
 
     # 우회전
     def steer_right(self, angle):
-        self.steer(angle)
+        if angle > self.MAXANGLE:
+            angle = self.MAXANGLE
+        pulse_time = self.MIDPWM + (self.MAXPWM - self.MIDPWM)/self.MAXANGLE*angle
+        self.servo.setPWM(0,0,int(pulse_time))
         print("steer_right")
-
-    # 좌회전
-    def steer_left(self, angle):
-        self.steer(-angle)
-        print("steer_left")
 
     # 핸들 중앙
     def steer_center(self):
-        self.steer(0)
+        self.servo.setPWM(0,0,375)
         print("steer_center")
 
 #mh.getMotor(1).run(Raspi_MotorHAT.RELEASE)
