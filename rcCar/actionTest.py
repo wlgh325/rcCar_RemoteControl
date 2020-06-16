@@ -1,8 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import QtSql
-from Car import Car
-from Raspi_PWM_Servo_Driver import PWM 
+from Car import Car 
 import time
 
 class pollingThread(QThread):
@@ -17,71 +16,67 @@ class pollingThread(QThread):
         self.db.setPassword("1234")
         ok = self.db.open()
         print(ok)
-        self.pwm = PWM(0x6F)
-        self.pwm.setPWMFreq(60)
+
         self.car = Car()
+        self.start=0
         self.getQuery()
 
     def getQuery(self):
         while True:
             time.sleep(0.1)
-            query = QtSql.QSqlQuery("select * from command2 order by time desc limit 1")
+            query = QtSql.QSqlQuery("select * from command1 order by time desc limit 1")
             query.next()
             cmdTime = query.record().value(0)
             cmdType = query.record().value(1)
             cmdArg = query.record().value(2)
             is_finish = query.record().value(3)
-
+            
+            # 명령어 처리가 안된 경우 실행
             if is_finish == 0:
-                query = QtSql.QSqlQuery("update command2 set is_finish=1 where is_finish=0")
+                query = QtSql.QSqlQuery("update command1 set is_finish=1 where is_finish=0")
                 print(cmdTime, cmdType, cmdArg)
 
                 if cmdType == "go":
                     self.car.go()
-
+                    input_time = self.getTime(cmdArg)
+                    self.start = time.time()
+                    while True:
+                        if time.time() - self.start > input_time:
+                            self.car.stop()
+                            break
+                    
                 if cmdType == "back":
                     self.car.back()
-                    
-                if cmdType == "stop":
-                    self.car.stop()
-                    
+                    input_time = self.getTime(cmdArg)
+                    self.start = time.time()
+                    while True:
+                        if time.time() - self.start > input_time:
+                            self.car.stop()
+                            break
+
                 if cmdType == "move":
                     self.car.move()
                 
                 if cmdType == "left":
-                    self.car.steer_left()
+                    input_angle = self.getAngle(cmdArg)
+                    self.car.steer_left(input_angle)
                 
                 if cmdType == "right":
-                    self.car.steer_right()
-                    
-                if cmdType == "center":
-                    self.car.steer_center()
-                    
-                if cmdType == "slow":
+                    input_angle = self.getAngle(cmdArg)
+                    self.car.steer_right(input_angle)
+                
+                if cmdType == "speedUp":
+                    self.car.speedUp()
+
+                if cmdType == "speedDown":
                     self.car.speedDown()
                     
-                if cmdType == "fast":
-                    self.car.speedUp()
-    def go(self):
-        print("MOTOR GOGOGO")
-        self.pwm.setPWM(0,0,415);
-
-    def back(self):
-        print("MOTOR BACKBACK")
-        
-    def stop(self):
-        print("MOTOR STOP")
+    def getTime(self, cmdArg):
+         # 작동 시간
+        return int(cmdArg.split(' ')[0])
     
-    def move(self):
-        print("MOTOR MOVE")
-
-    def left(self):
-        print("MOTOR LEFT")
-        self.pwm.setPWM(0,0,300);
-
-    def right(self):
-        print("MOTOR RIGHT")
-        self.pwm.setPWM(0,0,530);
+    def getAngle(self, cmdArg):
+        return int(cmdArg.split(' ')[0])
 
 th = pollingThread()
 th.start()
