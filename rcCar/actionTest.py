@@ -87,18 +87,17 @@ class pollingThread(QThread):
                         self.car.stop()
                         break
             '''
-
-            # go
-            if cmdType == "go" and cmdArg == "pressed":
+            # go and Back move
+            if cmdType == "go":
                 self.car.go()
-            if cmdType == "go" and cmdArg == "released":
-                self.car.stop()
-
-            # back
-            if cmdType == "back" and cmdArg == "pressed":
+            if cmdType == "back":
                 self.car.back()
-            if cmdType == "go" and cmdArg == "released":
-                self.car.stop()
+
+            # control speed
+            if cmdType == "accel":
+                self.car.speedUp()
+            if cmdType == "break":
+                self.car.speedDown()
 
             if cmdType == "move":
                 self.car.move()
