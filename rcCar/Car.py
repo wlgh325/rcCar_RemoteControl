@@ -21,21 +21,27 @@ class Car():
         # angle
         self.cur_pwm = self.MIDPWM
         self.servo.setPWM(0,0,self.MIDPWM)
+
+        # status
+        self.status = "stop"
         print("car init")
 
     # 앞으로
     def go(self):
         self.dcMotor.run(Raspi_MotorHAT.FORWARD)
+        self.status = "go"
         print("gogo")
 
     # 뒤로
     def back(self):
         self.dcMotor.run(Raspi_MotorHAT.BACKWARD)
+        self.status = "back"
         print("back")
 
     # 모터 작동 중지
     def stop(self):
         self.dcMotor.run(Raspi_MotorHAT.RELEASE)
+        self.status = "stop"
         print("stop")
 
     # 빠르게
@@ -51,6 +57,7 @@ class Car():
     def speedDown(self):
         if self.speed <= 20:
             self.speed = 0
+            self.stop()
         else:
             self.speed -= 20
         self.dcMotor.setSpeed(self.speed)
@@ -64,7 +71,7 @@ class Car():
             self.cur_pwm = self.MINPWM
         self.servo.setPWM(0,0,self.cur_pwm)
         print("steer_left")
-        #pulse_time = self.MIDPWM - (self.MIDPWM-self.MINPWM)/self.MAXANGLE*self.angle
+        self.status = "left"
 
     # 우회전
     def steer_right(self):
@@ -74,14 +81,19 @@ class Car():
         elif self.cur_pwm < self.MINPWM:
             self.cur_pwm = self.MINPWM
         self.servo.setPWM(0,0,self.cur_pwm)
+        self.status = "right"
         print("steer_right")
 
     # 핸들 중앙
     def steer_center(self):
         self.servo.setPWM(0,0,375)
         print("steer_center")
-
-#mh.getMotor(1).run(Raspi_MotorHAT.RELEASE)
-#mh.getMotor(2).run(Raspi_MotorHAT.RELEASE)
-#mh.getMotor(3).run(Raspi_MotorHAT.RELEASE)
-#mh.getMotor(4).run(Raspi_MotorHAT.RELEASE)
+    
+    def getStatus(self):
+        return self.status
+    
+    def stopAllMotor(self):
+        self.mh.getMotor(1).run(Raspi_MotorHAT.RELEASE)
+        self.mh.getMotor(2).run(Raspi_MotorHAT.RELEASE)
+        self.mh.getMotor(3).run(Raspi_MotorHAT.RELEASE)
+        self.mh.getMotor(4).run(Raspi_MotorHAT.RELEASE)

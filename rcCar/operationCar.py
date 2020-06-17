@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtSql
 from Car import Car 
 from sense_hat import SenseHat
+from SenseImage import SenseImage
 import time
 
 class pollingThread(QThread):
@@ -10,6 +11,7 @@ class pollingThread(QThread):
         super().__init__()
         self.left_pressed = False
         self.right_pressed = False
+        self.image = SenseImage()
 
     def run(self):
         self.db = QtSql.QSqlDatabase.addDatabase('QMYSQL')
@@ -27,6 +29,8 @@ class pollingThread(QThread):
             time.sleep(0.1)
             self.getQuery()
             self.setQuery()
+            self.showStatus()
+
     def setQuery(self):
         pressure = self.sense.get_pressure()
         temp = self.sense.get_temperature()
@@ -48,11 +52,13 @@ class pollingThread(QThread):
         self.query.bindValue(":meta", "")
         self.query.bindValue(":finish", 0)
         self.query.exec()
-        
+       
+        '''
         a = int((p * 1271) % 256)
         b = int((t * 1271) % 256)
         c = int((h * 1271) % 256)
-        self.sense.clear(a, b, c)
+        self.sensing.sense.clear(a, b, c)
+        '''
 
     def getQuery(self):
         
@@ -90,6 +96,7 @@ class pollingThread(QThread):
             # go and Back move
             if cmdType == "go":
                 self.car.go()
+
             if cmdType == "back":
                 self.car.back()
 
@@ -105,27 +112,21 @@ class pollingThread(QThread):
             # left button
             if cmdType == "left" and cmdArg == "pressed":
                 self.left_pressed = True
+
             if cmdType == "left" and cmdArg == "released":
                 self.left_pressed = False
 
             # right button
             if cmdType == "right" and cmdArg == "pressed":
                 self.right_pressed = True
+
             if cmdType == "right" and cmdArg == "released":
                 self.right_pressed = False
             
             # mid
             if cmdType == "mid":
                 self.car.steer_center()
-
-            # accel
-            if cmdType == "speedUp":
-                self.car.speedUp()
-
-            # break
-            if cmdType == "speedDown":
-                self.car.speedDown()
-        
+                   
         if self.left_pressed == True:
             self.car.steer_left()
         if self.right_pressed == True:
@@ -137,9 +138,33 @@ class pollingThread(QThread):
     def getAngle(self, cmdArg):
         return int(cmdArg.split(' ')[0])
 
+    # show image
+    def showStatus(self):
+        status = self.car.status
+        if status == "stop":
+            self.showStop()
+        elif status == "left":
+            self.showLeft()
+        elif status == "right":
+            self.showRight()
+        elif status == "go":
+            self.showGo()
+        elif status == "back":
+            self.showBack()
+
+    def showStop(self):
+        self.sense.set_pixels(self.image.stopImage)
+    def showGo(self):
+        self.sense.set_pixels(self.image.goImage)
+    def showBack(self):
+        self.sense.set_pixels(self.image.backImage)
+    def showLeft(self):
+        self.sense.set_pixels(self.image.leftImage)
+    def showRight(self):
+        self.sense.set_pixels(self.image.rightImage)
+
 th = pollingThread()
 th.start()
-
 app = QApplication([])
 
 while True:
