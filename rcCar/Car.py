@@ -40,14 +40,20 @@ class Car():
 
     # 빠르게
     def speedUp(self):
-        self.speed = 255 if self.speed >= 235 else self.speed+20 #최대255, 20단위로 증감
+        if self.speed >= 235:
+            self.speed = 255
+        else:
+            self.speed += 20
         self.dcMotor.setSpeed(self.speed)
         print("speedUp")
 
     # 느리게
     def speedDown(self):
-        self.speed=0 if speed <= 20  else speed-20  # 최하 0
-        self.dcMotor.setSpeed(speed)
+        if self.speed <= 20:
+            self.speed = 0
+        else:
+            self.speed -= 20
+        self.dcMotor.setSpeed(self.speed)
         print("speedDown")
 
     def steer_left(self):
