@@ -29,43 +29,28 @@ class MyApp(QMainWindow):
 		self.timer.setInterval(100)
 		self.timer.timeout.connect(self.pollingQuery)
 		self.timer.start()
-
+	# right
 	def pressedRight(self):
 		self.commandQuery("right", "pressed")
-		print("press right")
-
 	def releasedRight(self):
 		self.commandQuery("right", "released")
-		print("release right")
-
+	# left
 	def pressedLeft(self):
 		self.commandQuery("left", "pressed")
 	def releasedLeft(self):
 		self.commandQuery("left", "released")
-		print("release left")
-
-	def clickedRight(self):
-		self.commandQuery("right", "1 sec")
 	
-	def clickedLeft(self):
-		self.commandQuery("left", "1 sec")
-	'''	
-	def clickedGo(self):
-		self.commandQuery("go", "1 sec")
-	
-	def clickedBack(self):
-		self.commandQuery("back", "1 sec")
-	'''
 	# go
-	def pressedGo(self):
-		self.commandQuery("go", "pressed")
-	def releasedGo(self):
-		self.commandQuery("go", "released")
+	def clickedGo(self):
+		self.commandQuery("go", "3 sec")
 	# back
-	def pressedBack(self):
-		self.commandQuery("back", "pressed")
-	def releasedBack(self):
-		self.commandQuery("back", "released")
+	def clickedBack(self):
+		self.commandQuery("back", "3 sec")
+	
+	def clickedAccel(self):
+		self.commandQuery("accel", " ")
+	def clickedBreak(self):
+		self.commandQuery("break", " ")
 
 	def clickedMid(self):
 		self.commandQuery("mid", "1 sec")
