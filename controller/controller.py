@@ -49,12 +49,23 @@ class MyApp(QMainWindow):
 	
 	def clickedLeft(self):
 		self.commandQuery("left", "1 sec")
-	
+	'''	
 	def clickedGo(self):
 		self.commandQuery("go", "1 sec")
 	
 	def clickedBack(self):
 		self.commandQuery("back", "1 sec")
+	'''
+	# go
+	def pressedGo(self):
+		self.commandQuery("go", "pressed")
+	def releasedGo(self):
+		self.commandQuery("go", "released")
+	# back
+	def pressedBack(self):
+		self.commandQuery("back", "pressed")
+	def releasedBack(self):
+		self.commandQuery("back", "released")
 
 	def clickedMid(self):
 		self.commandQuery("mid", "1 sec")

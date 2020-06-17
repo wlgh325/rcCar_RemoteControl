@@ -146,38 +146,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_back</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>clickedBack()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>190</x>
-     <y>560</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>237</x>
-     <y>558</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_go</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>clickedGo()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>212</x>
-     <y>416</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>267</x>
-     <y>403</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btn_right</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
@@ -273,6 +241,70 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_go</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>pressedGo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>220</x>
+     <y>267</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_go</sender>
+   <signal>released()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>releasedGo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>194</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_back</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>pressedBack()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>200</x>
+     <y>408</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>307</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_back</sender>
+   <signal>released()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>releasedBack()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>418</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>254</x>
+     <y>411</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>clickedRight()</slot>
@@ -284,5 +316,9 @@
   <slot>pressedLeft()</slot>
   <slot>releasedLeft()</slot>
   <slot>releasedRight()</slot>
+  <slot>pressedGo()</slot>
+  <slot>releasedGo()</slot>
+  <slot>pressedBack()</slot>
+  <slot>releasedBack()</slot>
  </slots>
 </ui>
