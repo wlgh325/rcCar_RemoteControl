@@ -16,6 +16,9 @@ class Car():
         self.MINPWM = 140
         self.MAXPWM = 450
         self.MAXANGLE = 60
+
+        # angle
+        self.angle = 0
         print("car init")
 
     # 앞으로
@@ -45,6 +48,7 @@ class Car():
         self.dcMotor.setSpeed(speed)
         print("speedDown")
 
+    '''
     # 좌회전
     def steer_left(self, angle):
         if angle > self.MAXANGLE:
@@ -52,15 +56,25 @@ class Car():
         pulse_time = self.MIDPWM - (self.MIDPWM-self.MINPWM)/self.MAXANGLE*angle
         self.servo.setPWM(0,0,int(pulse_time))
         print("steer_left")
+    '''
 
+    def steer_left(self):
+        if self.angle >= self.MAXANGLE:
+            self.angle = self.MAXANGLE
+        else:
+            self.angle+=1
+        pulse_time = self.MIDPWM - (self.MIDPWM-self.MINPWM)/self.MAXANGLE*self.angle
+        self.servo.setPWM(0,0,int(pulse_time))
+        print("steer_left")
+        print(self.angle)
     # 우회전
-    def steer_right(self, angle):
-        if angle > self.MAXANGLE:
-            angle = self.MAXANGLE
-        pulse_time = self.MIDPWM + (self.MAXPWM - self.MIDPWM)/self.MAXANGLE*angle
+    def steer_right(self):
+        if self.angle >= self.MAXANGLE:
+            self.angle = self.MAXANGLE
+        pulse_time = self.MIDPWM + (self.MAXPWM - self.MIDPWM)/self.MAXANGLE*self.angle
         self.servo.setPWM(0,0,int(pulse_time))
         print("steer_right")
-
+        print(self.angle)
     # 핸들 중앙
     def steer_center(self):
         self.servo.setPWM(0,0,375)

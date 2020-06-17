@@ -19,6 +19,8 @@ class pollingThread(QThread):
 
         self.car = Car()
         self.start=0
+        self.left_pressed = False
+        self.right_pressed = False
         self.getQuery()
 
     def getQuery(self):
@@ -57,13 +59,19 @@ class pollingThread(QThread):
                 if cmdType == "move":
                     self.car.move()
                 
-                if cmdType == "left":
-                    input_angle = self.getAngle(cmdArg)
-                    self.car.steer_left(input_angle)
-                
-                if cmdType == "right":
-                    input_angle = self.getAngle(cmdArg)
-                    self.car.steer_right(input_angle)
+                # left button
+                if cmdType == "left" and cmdArg == "pressed":
+                    self.car.steer_left()
+                    self.left_pressed = True
+                if cmdType == "left" and cmdArg == "released":
+                    self.left_pressed = False
+
+                # right button
+                if cmdType == "right" and cmdArg == "pressed":
+                    self.car.steer_right()
+                    self.right_pressed = True
+                if cmdType == "right" and cmdArg == "released":
+                    self.right_pressed = False
 
                 if cmdType == "mid":
                     self.car.steer_center()
@@ -73,7 +81,12 @@ class pollingThread(QThread):
 
                 if cmdType == "speedDown":
                     self.car.speedDown()
-                    
+            
+            if self.left_pressed == True:
+                self.car.steer_left()
+            if self.right_pressed == True:
+                self.car.steer_right()
+
     def getTime(self, cmdArg):
          # 작동 시간
         return int(cmdArg.split(' ')[0])
