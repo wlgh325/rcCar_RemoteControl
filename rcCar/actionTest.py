@@ -67,7 +67,8 @@ class pollingThread(QThread):
         if is_finish == 0:
             query = QtSql.QSqlQuery("update command1 set is_finish=1 where is_finish=0")
             print(cmdTime, cmdType, cmdArg)
-
+            '''
+            # 초 만큼 움직이기
             if cmdType == "go":
                 self.car.go()
                 input_time = self.getTime(cmdArg)
@@ -85,6 +86,19 @@ class pollingThread(QThread):
                     if time.time() - self.start > input_time:
                         self.car.stop()
                         break
+            '''
+
+            # go
+            if cmdType == "go" and cmdArg == "pressed":
+                self.car.go()
+            if cmdType == "go" and cmdArg == "released":
+                self.car.stop()
+
+            # back
+            if cmdType == "back" and cmdArg == "pressed":
+                self.car.back()
+            if cmdType == "go" and cmdArg == "released":
+                self.car.stop()
 
             if cmdType == "move":
                 self.car.move()
@@ -100,13 +114,16 @@ class pollingThread(QThread):
                 self.right_pressed = True
             if cmdType == "right" and cmdArg == "released":
                 self.right_pressed = False
-
+            
+            # mid
             if cmdType == "mid":
                 self.car.steer_center()
 
+            # accel
             if cmdType == "speedUp":
                 self.car.speedUp()
 
+            # break
             if cmdType == "speedDown":
                 self.car.speedDown()
         
