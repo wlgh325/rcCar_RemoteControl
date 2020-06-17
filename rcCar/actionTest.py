@@ -8,6 +8,8 @@ import time
 class pollingThread(QThread):
     def __init__(self):
         super().__init__()
+        self.left_pressed = False
+        self.right_pressed = False
 
     def run(self):
         self.db = QtSql.QSqlDatabase.addDatabase('QMYSQL')
@@ -20,9 +22,6 @@ class pollingThread(QThread):
 
         self.car = Car()
         self.start=0
-        self.left_pressed = False
-        self.right_pressed = False
-        
         self.sense = SenseHat()
         while True:
             time.sleep(0.1)
@@ -40,7 +39,7 @@ class pollingThread(QThread):
         #msg = "Press : " + str(p) + "  Temp : " + str(t) + "  Humid : " + str(h)
         #print(msg)    
         self.query = QtSql.QSqlQuery();
-        self.query.prepare("insert into sensing (time, num1, num2, num3, meta_string, is_finish) values (:time, :num1, :num2, :num3, :meta, :finish)");
+        self.query.prepare("insert into sensing1 (time, num1, num2, num3, meta_string, is_finish) values (:time, :num1, :num2, :num3, :meta, :finish)");
         time = QDateTime().currentDateTime()
         self.query.bindValue(":time", time)
         self.query.bindValue(":num1", p)
@@ -92,14 +91,12 @@ class pollingThread(QThread):
             
             # left button
             if cmdType == "left" and cmdArg == "pressed":
-                self.car.steer_left()
                 self.left_pressed = True
             if cmdType == "left" and cmdArg == "released":
                 self.left_pressed = False
 
             # right button
             if cmdType == "right" and cmdArg == "pressed":
-                self.car.steer_right()
                 self.right_pressed = True
             if cmdType == "right" and cmdArg == "released":
                 self.right_pressed = False
@@ -119,7 +116,6 @@ class pollingThread(QThread):
             self.car.steer_right()
 
     def getTime(self, cmdArg):
-         
         return int(cmdArg.split(' ')[0])
     
     def getAngle(self, cmdArg):

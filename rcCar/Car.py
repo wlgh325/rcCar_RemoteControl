@@ -12,13 +12,15 @@ class Car():
         self.servo.setPWMFreq(50)
 
         # init constant
+        # jahong
         self.MIDPWM = 375
         self.MINPWM = 140
         self.MAXPWM = 450
-        self.MAXANGLE = 60
+        #self.MAXANGLE = 60
 
         # angle
-        self.angle = 0
+        self.cur_pwm = self.MIDPWM
+        self.servo.setPWM(0,0,self.MIDPWM)
         print("car init")
 
     # 앞으로
@@ -48,33 +50,26 @@ class Car():
         self.dcMotor.setSpeed(speed)
         print("speedDown")
 
-    '''
-    # 좌회전
-    def steer_left(self, angle):
-        if angle > self.MAXANGLE:
-            angle = self.MAXANGLE
-        pulse_time = self.MIDPWM - (self.MIDPWM-self.MINPWM)/self.MAXANGLE*angle
-        self.servo.setPWM(0,0,int(pulse_time))
-        print("steer_left")
-    '''
-
     def steer_left(self):
-        if self.angle >= self.MAXANGLE:
-            self.angle = self.MAXANGLE
-        else:
-            self.angle+=1
-        pulse_time = self.MIDPWM - (self.MIDPWM-self.MINPWM)/self.MAXANGLE*self.angle
-        self.servo.setPWM(0,0,int(pulse_time))
+        self.cur_pwm -= 30
+        if self.cur_pwm > self.MAXPWM:
+            self.cur_pwm = self.MAXPWM
+        elif self.cur_pwm < self.MINPWM:
+            self.cur_pwm = self.MINPWM
+        self.servo.setPWM(0,0,self.cur_pwm)
         print("steer_left")
-        print(self.angle)
+        #pulse_time = self.MIDPWM - (self.MIDPWM-self.MINPWM)/self.MAXANGLE*self.angle
+
     # 우회전
     def steer_right(self):
-        if self.angle >= self.MAXANGLE:
-            self.angle = self.MAXANGLE
-        pulse_time = self.MIDPWM + (self.MAXPWM - self.MIDPWM)/self.MAXANGLE*self.angle
-        self.servo.setPWM(0,0,int(pulse_time))
+        self.cur_pwm += 30
+        if self.cur_pwm > self.MAXPWM:
+            self.cur_pwm = self.MAXPWM
+        elif self.cur_pwm < self.MINPWM:
+            self.cur_pwm = self.MINPWM
+        self.servo.setPWM(0,0,self.cur_pwm)
         print("steer_right")
-        print(self.angle)
+
     # 핸들 중앙
     def steer_center(self):
         self.servo.setPWM(0,0,375)
